@@ -61,6 +61,7 @@ def encryptionOption():
     biKey.append(toBinary(key[0]))
     biKey.append(toBinary(key[1]))
     #Formatting for processing
+    plainChars = []
     for line in plaintxtFile:
         for achar in line:
             plainChars.append(achar)
@@ -98,11 +99,15 @@ def bruteForceOption():
 def main():
     print("=============================================================")
     print("===============Welcome to Cryptomatic========================")
-    print("1. Enter a file to decrypt using a given key. \n 2. Enter a file to decrypt using a given key. \n Enter a file to decrypt using a brute force method.")
+    print("1. Enter a file to encrypt using a given key. \n2. Enter a file to decrypt using a given key. \n3. Enter a file to decrypt using a brute force method.")
     choice = input("What would you like to to do:")
+    choice = int(choice)
     print("\n\n")
         
     if choice==1: encryptionOption()
     if choice==2: decryptionOption()
     if choice==3: bruteForceOption()
     else: main()
+    
+    
+main()
