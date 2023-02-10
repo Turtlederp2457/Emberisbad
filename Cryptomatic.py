@@ -2,6 +2,8 @@
 #Date:2/8/2023
 #For a class
 
+import binascii
+
 def encrypt(plainList, keyPair, encryptList):
     """
     Only accepts Binary text
@@ -32,6 +34,8 @@ def toString(list):
         out += str(i)
     return out
 
+def toASCII(input):
+    binascii.b2a_uu()
 def XOR (a,b):
     if a==0 and b==0: return 0
     if a==1 and b==0: return 1
@@ -72,6 +76,7 @@ def encryptionOption():
     #Conversion to encrypted text
     encryptList = []
     encrypt(plainBinaryText, biKey, encryptList)
+    print(encryptList)
     #Output File writing
     outputFile = open("OutFile.txt", "a")
     for i in encryptList:
