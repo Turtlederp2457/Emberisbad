@@ -3,8 +3,7 @@
 #For a class
 """
 To Do:
-
-Just changed charToBinary to output only string values of binary need to convert more to int
+Load more into the information in the bruteforce decryption.
 
 Encryption
     Read txt from a file and obtain a key from the user
@@ -15,7 +14,13 @@ Encryption
     Write txt to file
 Decryption
 Brute Force Decyption
+    Load information
+        all Binary key values
+        Word lists 
+    
 """
+
+import string
 
 def binaryToAscii(binary):
     decimal = int(binary, 2)
@@ -54,6 +59,7 @@ def encryptionOption():
     if len(key) != 2: 
         print("Error your key is incompatible.")
         main()
+        
     #converting to binary
     biKey = []
     for a in key:
@@ -64,6 +70,7 @@ def encryptionOption():
             biPlainTxtList.append(charToBinary(i))
     print(biPlainTxtList)
     print(biKey[0])
+    
     #XOR of binary
     biEncryptedTxtList = []
     keyIndex = 0
@@ -71,6 +78,7 @@ def encryptionOption():
         biEncryptedTxtList.append(charXOR(i, biKey[keyIndex]))
         if keyIndex==0: keyIndex=1
         else: keyIndex=0
+        
     #XORed binary to ascii
     encryptedTxtList = []
     for i in biEncryptedTxtList:
@@ -88,6 +96,7 @@ def decryptionOption():
     if len(key) != 2: 
         print("Error your key is incompatible.")
         main()
+        
     #converting to binary
     biKey = []
     for a in key:
@@ -96,6 +105,7 @@ def decryptionOption():
     for line in plaintxtFile:
         for i in line:
             biPlainTxtList.append(charToBinary(i))
+            
     #XOR of binary
     biEncryptedTxtList = []
     keyIndex = 0
@@ -103,6 +113,7 @@ def decryptionOption():
         biEncryptedTxtList.append(charXOR(i, biKey[keyIndex]))
         if keyIndex==0: keyIndex=1
         else: keyIndex=0
+        
     #XORed binary to ascii
     encryptedTxtList = []
     for i in biEncryptedTxtList:
@@ -112,7 +123,23 @@ def decryptionOption():
         outFile.write(i)
     
 def bruteForceOption():
-    return 0 
+    #Load Infomation
+    possibleKeys = []
+    for i in string.printable:
+        for n in string.printable:
+            possibleKeys.append([i,n])
+    for i in possibleKeys:
+        possibleKeys[i] = [charToBinary(possibleKeys[i,0]), charToBinary(possibleKeys[i,1])]
+    
+    #Getting information for decryption
+    fileName = input("What is the name of the file you want to decrypt:")
+    plaintxtFile = open(fileName, "r")
+    #converting to binary
+    biPlainTxtList = []
+    for line in plaintxtFile:
+        for i in line:
+            biPlainTxtList.append(charToBinary(i))
+    
 
 
 #========================Start of logic=======================
