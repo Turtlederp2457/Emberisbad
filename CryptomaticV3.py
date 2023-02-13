@@ -49,27 +49,17 @@ def charXOR(char, key):
     for i in range(len(char)):
         out += str(XOR(int(char[i]),int(key[i])))
     return out
-        
 
-def encryptionOption():
-    #Getting information for encryption
-    fileName = input("What is the name of the file you want to encrypt:")
-    plaintxtFile = open(fileName, "r")
-    key = input("What is your key(Two letters):")
-    if len(key) != 2: 
-        print("Error your key is incompatible.")
-        main()
-        
+def encrypt(key, fileName):
+    plainTxtFile = open(fileName, "r")
     #converting to binary
     biKey = []
     for a in key:
         biKey.append(charToBinary(a))
     biPlainTxtList = []
-    for line in plaintxtFile:
+    for line in plainTxtFile:
         for i in line:
             biPlainTxtList.append(charToBinary(i))
-    print(biPlainTxtList)
-    print(biKey[0])
     
     #XOR of binary
     biEncryptedTxtList = []
@@ -86,61 +76,6 @@ def encryptionOption():
     outFile = open("outFile.txt", "a")
     for i in encryptedTxtList:
         outFile.write(i)
-        
-        
-def decryptionOption():
-    #Getting information for decryption
-    fileName = input("What is the name of the file you want to decrypt:")
-    plaintxtFile = open(fileName, "r")
-    key = input("What is your key(Two letters):")
-    if len(key) != 2: 
-        print("Error your key is incompatible.")
-        main()
-        
-    #converting to binary
-    biKey = []
-    for a in key:
-        biKey.append(charToBinary(a))
-    biPlainTxtList = []
-    for line in plaintxtFile:
-        for i in line:
-            biPlainTxtList.append(charToBinary(i))
-            
-    #XOR of binary
-    biEncryptedTxtList = []
-    keyIndex = 0
-    for i in biPlainTxtList:
-        biEncryptedTxtList.append(charXOR(i, biKey[keyIndex]))
-        if keyIndex==0: keyIndex=1
-        else: keyIndex=0
-        
-    #XORed binary to ascii
-    encryptedTxtList = []
-    for i in biEncryptedTxtList:
-        encryptedTxtList.append(binaryToAscii(i))
-    outFile = open("outFile.txt", "a")
-    for i in encryptedTxtList:
-        outFile.write(i)
-    
-def bruteForceOption():
-    #Load Infomation
-    possibleKeys = []
-    for i in string.printable:
-        for n in string.printable:
-            possibleKeys.append([i,n])
-    for i in possibleKeys:
-        possibleKeys[i] = [charToBinary(possibleKeys[i,0]), charToBinary(possibleKeys[i,1])]
-    
-    #Getting information for decryption
-    fileName = input("What is the name of the file you want to decrypt:")
-    plaintxtFile = open(fileName, "r")
-    #converting to binary
-    biPlainTxtList = []
-    for line in plaintxtFile:
-        for i in line:
-            biPlainTxtList.append(charToBinary(i))
-    
-
 
 #========================Start of logic=======================
 
@@ -152,9 +87,40 @@ def main():
     choice = int(choice)
     print("\n\n")
         
-    if choice==1: encryptionOption()
-    if choice==2: decryptionOption()
-    if choice==3: bruteForceOption()
+    if choice==1:
+        #Getting information for encryption
+        fileName = input("What is the name of the file you want to encrypt:")
+        key = input("What is your key(Two letters):")
+        if len(key) != 2: 
+            print("Error your key is incompatible.")
+            main()
+        encrypt(key, fileName)
+            
+    if choice==2: 
+        #Getting information for decryption
+        fileName = input("What is the name of the file you want to decrypt:")
+        key = input("What is your key(Two letters):")
+        if len(key) != 2: 
+            print("Error your key is incompatible.")
+            main()
+        encrypt(key, fileName)
+    
+    if choice==3:
+        #Load Infomation
+        possibleKeys = []
+        for i in string.printable:
+            for n in string.printable:
+                possibleKeys.append([i,n])
+        for i in range(len(possibleKeys)):
+            possibleKeys[i] = [charToBinary(possibleKeys[i][0]), charToBinary(possibleKeys[i][1])]
+        words = []
+        wordFile = open("wordList.txt", "r")
+        for word in wordFile:
+            words.append(word)
+        #Getting information for decryption
+        fileName = input("What is the name of the file you want to decrypt:")
+        
+        
     else: main()
     
     
