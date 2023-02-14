@@ -51,8 +51,17 @@ def charXOR(char, key):
     return out
 
 def encrypt(key, fileName):
+    """Takes a key and a file name and XOR encrypts them returning a string representing the encrypted text
+
+    Args:
+        key (List): List of the form ["",""] where each entry represents a part of the key
+        fileName (String): name of the file you wish to be encrypted
+
+    Returns:
+        String: encrypted string
+    """
     plainTxtFile = open(fileName, "r")
-    #converting to binary
+    #converting key and file to binary
     biKey = []
     for a in key:
         biKey.append(charToBinary(a))
@@ -60,6 +69,7 @@ def encrypt(key, fileName):
     for line in plainTxtFile:
         for i in line:
             biPlainTxtList.append(charToBinary(i))
+    plainTxtFile.close()
     
     #XOR of binary
     biEncryptedTxtList = []
@@ -87,15 +97,17 @@ def main():
     print("1. Enter a file to encrypt using a given key. \n2. Enter a file to decrypt using a given key. \n3. Enter a file to decrypt using a brute force method.")
     choice = input("What would you like to to do:")
     choice = int(choice)
-    print("\n\n")
+    print("\n")
         
     if choice==1:
         #Getting information for encryption
         fileName = input("What is the name of the file you want to encrypt:")
         key = input("What is your key(Two letters):")
+        #key validation
         if len(key) != 2: 
             print("Error your key is incompatible.")
             main()
+        #File Encryption
         encryptedString = encrypt(key, fileName)
         outFile = open("outFile.txt", "a")
         outFile.write(encryptedString)
@@ -107,9 +119,11 @@ def main():
         if len(key) != 2: 
             print("Error your key is incompatible.")
             main()
+        #File decryption 
         decryptedString = encrypt(key, fileName)
         outFile = open("outFile.txt", "a")
         outFile.write(decryptedString)
+        outFile.close()
     
     elif choice==3:
         #Load Infomation
@@ -122,10 +136,10 @@ def main():
         for word in wordFile:
             if word == "a":
                 words.append(" a ")
-            words.append(word)
+            words.append(word.strip())
         #Getting information for decryption
         fileName = input("What is the name of the file you want to decrypt:")
-        #decryption
+        #decryption determining key value on a short list
         bestKeys = []
         for key in possibleKeys:
             bigCount = 0
@@ -135,32 +149,20 @@ def main():
                 count = lPossibleString.count(word)
                 bigCount += count
             bestKeys.append([bigCount,key])
+        #Finds the highest scored Key
         max = 0
         for i in bestKeys:
-            if i[0] > max: max = i[0]
-        dictionary = []
-        diction = open("dictionary.txt", "r")
-        for i in diction:
-            dictionary.append(i)
-        bestKey = [0,["",""]]
-        for i in bestKeys:
-            bigCount = 0
-            if i[0] >= max/2:
-                possibleString = encrypt(key, fileName)
-                lPossibleString = possibleString.lower()
-                for word in dictionary:
-                    count = lPossibleString.count(word)
-                    bigCount += count
-            if bestKey[0] < bigCount: 
-                bestKey[0] = bigCount
-                bestKey[1] = i
-        decryptedString = ""
-        key = ""
-        for i in bestKey[1]:
-            key+=i
-        decryptedString = encrypt(key, fileName)
-        out = open("outFile.txt", "a")
-        out.write(decryptedString)
+            if i[0] > max: 
+                max = i[0]
+                bestKey = i[1]
+                #prints out each max just in case the answer is close but not exact Often capitalization issues
+                print(i)
+        #output of key information
+        print("The key is " + bestKey[0] + bestKey[1])
+        outString = encrypt(bestKey, fileName)
+        outFile = open("outFile.txt", "a")
+        outFile.write(outString)
+        print("Finsihed. Your text was written to outFile.txt")
     else: main()
     
 main()
