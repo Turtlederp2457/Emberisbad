@@ -73,9 +73,11 @@ def encrypt(key, fileName):
     encryptedTxtList = []
     for i in biEncryptedTxtList:
         encryptedTxtList.append(binaryToAscii(i))
-    outFile = open("outFile.txt", "a")
+    outString = ""
     for i in encryptedTxtList:
-        outFile.write(i)
+        outString += i
+    return outString
+        
 
 #========================Start of logic=======================
 
@@ -94,34 +96,71 @@ def main():
         if len(key) != 2: 
             print("Error your key is incompatible.")
             main()
-        encrypt(key, fileName)
+        encryptedString = encrypt(key, fileName)
+        outFile = open("outFile.txt", "a")
+        outFile.write(encryptedString)
             
-    if choice==2: 
+    elif choice==2: 
         #Getting information for decryption
         fileName = input("What is the name of the file you want to decrypt:")
         key = input("What is your key(Two letters):")
         if len(key) != 2: 
             print("Error your key is incompatible.")
             main()
-        encrypt(key, fileName)
+        decryptedString = encrypt(key, fileName)
+        outFile = open("outFile.txt", "a")
+        outFile.write(decryptedString)
     
-    if choice==3:
+    elif choice==3:
         #Load Infomation
         possibleKeys = []
         for i in string.printable:
             for n in string.printable:
                 possibleKeys.append([i,n])
-        for i in range(len(possibleKeys)):
-            possibleKeys[i] = [charToBinary(possibleKeys[i][0]), charToBinary(possibleKeys[i][1])]
         words = []
         wordFile = open("wordList.txt", "r")
         for word in wordFile:
+            if word == "a":
+                words.append(" a ")
             words.append(word)
         #Getting information for decryption
         fileName = input("What is the name of the file you want to decrypt:")
-        
-        
+        #decryption
+        bestKeys = []
+        for key in possibleKeys:
+            bigCount = 0
+            possibleString = encrypt(key, fileName)
+            lPossibleString = possibleString.lower()
+            for word in words:
+                count = lPossibleString.count(word)
+                bigCount += count
+            bestKeys.append([bigCount,key])
+        max = 0
+        for i in bestKeys:
+            if i[0] > max: max = i[0]
+        dictionary = []
+        diction = open("dictionary.txt", "r")
+        for i in diction:
+            dictionary.append(i)
+        bestKey = [0,["",""]]
+        for i in bestKeys:
+            bigCount = 0
+            if i[0] >= max/2:
+                possibleString = encrypt(key, fileName)
+                lPossibleString = possibleString.lower()
+                for word in dictionary:
+                    count = lPossibleString.count(word)
+                    bigCount += count
+            if bestKey[0] < bigCount: 
+                bestKey[0] = bigCount
+                bestKey[1] = i
+        decryptedString = ""
+        key = ""
+        for i in bestKey[1]:
+            key+=i
+        decryptedString = encrypt(key, fileName)
+        out = open("outFile.txt", "a")
+        out.write(decryptedString)
     else: main()
-    
     
 main()
